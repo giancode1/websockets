@@ -5,21 +5,58 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="/socket.io/socket.io.js"></script>
-    <title>Webscokets</title>
+    <title>Chat</title>
 </head>
 <body>
-    <h1>My App</h1>
+    <h1>Chat app</h1>
+    <div id="messages"></div>
+    <br>
+    <form id="form">
+        <input type="text" id="username" placeholder="nombre">
+        <input type="text" id="texto" placeholder="mensaje">
+        <button >Enviar!</button>
+    </form>
     
-    <script>
-        //const socket = io.connect('http://localhost:3000')
-        const socket = io();
+<script>
+    //const socket = io.connect('http://localhost:3000')
+    const socket = io();
 
-        socket.on('messages', (data) => {
-            console.log(data)
-            
-            socket.emit("client", {text: "Hola de vuelta"})
-        })
-    </script>
+    socket.on('server-messages', (data) => {
+        console.log(data)
+        render(data)
+    })
+
+    const form = document.getElementById('form');
+    const username = document.getElementById('username')
+    const texto = document.getElementById('texto')
+
+    form.addEventListener('submit', e => {
+        e.preventDefault() //no se reinicie la pag
+        addMessage()
+    })
+
+    const addMessage = () => {
+        const payload = {
+            author: username.value,
+            text: texto.value
+        }
+        socket.emit('client-message', payload)
+    }
+
+    //renderizar
+    const render = (data) => {
+        console.log('esta data me llego:',data)
+        const content = data.map( (elem,index) => {
+            return(`
+            <div>
+                <strong>${elem.author}</strong>:    
+                <em>${elem.text}</em>
+            </div> `)
+        }).join(" ");
+        document.getElementById('messages').innerHTML = content
+    }
+
+</script>
     
 </body>
 </html>
