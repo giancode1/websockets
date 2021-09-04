@@ -4,59 +4,54 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="style.css">
     <title>Chat</title>
 </head>
 <body>
-    <h1>Chat app</h1>
-    <div id="messages"></div>
-    <br>
-    <form id="form">
-        <input type="text" id="username" placeholder="nombre">
-        <input type="text" id="texto" placeholder="mensaje">
-        <button >Enviar!</button>
-    </form>
+    <h2 class="title">🤩 CHAT GC 💬 </h2>
+
+    <div class="main">
+        <div class="name">
+            <span><i class="far fa-user"></i></span>
+            <input type="text" id="name-input" class="name-input" value="yourName" maxlength="20" autofocus>
+        </div>
+
+        <ul class="message-container" id="message-container">
+            <!-- <li class="message-left">
+                <p class="message">
+                lorem ipsum 
+                <span>Gianc ● 06 Agosto</span>
+            </p>
+            </li>
+
+            <li class="message-right">
+                <p class="message">lorem ipsum <span>Gianc ● 06 Agosto</span></p>
+            </li>
+
+            <li class="message-feedback">
+                <p class="feedback" id="feedback">
+                    ✍️ Gianc esta escribiendo...
+                </p>
+            </li> -->
+
+        </ul>
     
-<script>
-    //const socket = io.connect('http://localhost:3000')
-    const socket = io();
+        <form id="message-form" class="message-form">
+            <input type="text" id="message-input" class="message-input" name="message">
+            <div class="v-divider"></div>
+            <button type="submit" class="send-button">Enviar
+                <span><i class="fas fa-paper-plane"></i></span>
+            </button>
+        </form>
+    </div>
 
-    socket.on('server-messages', (data) => {
-        console.log(data)
-        render(data)
-    })
+    <h3 class="clients-total" id="client-total">Total clientes: 2</h3>
 
-    const form = document.getElementById('form');
-    const username = document.getElementById('username')
-    const texto = document.getElementById('texto')
 
-    form.addEventListener('submit', e => {
-        e.preventDefault() //no se reinicie la pag
-        addMessage()
-    })
-
-    const addMessage = () => {
-        const payload = {
-            author: username.value,
-            text: texto.value
-        }
-        socket.emit('client-message', payload)
-    }
-
-    //renderizar
-    const render = (data) => {
-        console.log('esta data me llego:',data)
-        const content = data.map( (elem,index) => {
-            return(`
-            <div>
-                <strong>${elem.author}</strong>:    
-                <em>${elem.text}</em>
-            </div> `)
-        }).join(" ");
-        document.getElementById('messages').innerHTML = content
-    }
-
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" referrerpolicy="no-referrer"></script>
+<script src="main.js"></script>
     
 </body>
 </html>
