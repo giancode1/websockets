@@ -3,24 +3,29 @@ const app = express()
 const server = require('http').Server(app)
 const io = require('socket.io')(server)
 
-const messages = [{
-    id: 1,
-    text: 'Bienvenido al chat',
-    author: 'Giancarlo',
-}]
-
 app.use(express.static(__dirname + '/public'))
 
+let socketsConected = new Set()
+
 io.on('connection', (socket) => {
-    console.log('a user connected:', socket.id)
+    console.log('socket connected: ', socket.id)
+    socketsConected.add(socket.id)
+    io.emit('clients-total', socketsConected.size)
 
-    socket.emit('server-messages', messages)
+    socket.on('disconnect', () => {
+        console.log('Socket disconnected', socket.id)
+        socketsConected.delete(socket.id)    
+        io.emit('clients-total', socketsConected.size)
+    }) 
 
-    socket.on('client-message', (data) => {
-        console.log(data)
-        messages.push(data)
-        io.sockets.emit('server-messages',messages) //a todos los sockets les emite este evento
+    socket.on('message', (data) => {
+        //console.log(data)
+        socket.broadcast.emit('chat-message', data)
     })  
+
+    socket.on('feedback', (data) => {
+        socket.broadcast.emit('feedback', data)
+      })
 
 })
 
